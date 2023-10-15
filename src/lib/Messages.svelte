@@ -47,12 +47,30 @@
 
 <div class="messages">
   {#each messages as message (message.id)}
-    <div class="message">
-      <div>
-        <small>
-          Sent by @{message.expand?.user?.username}
-        </small>
-        <p class="msg-text">{message.text}</p>
+    <div
+      class="chat py-4 {message.expand.user.id === $currentUser?.id
+        ? 'chat-end'
+        : 'chat-start'}"
+    >
+      <div class="chat-image avatar">
+        <div class="w-24 rounded-full border-2 border-neutral">
+          <img
+            src="https://api.dicebear.com/7.x/notionists/svg?seed={message
+              .expand.user.username}"
+            alt="avatar"
+          />
+        </div>
+      </div>
+      <div class="chat-header self-end pb-2 font-black">
+        @{message.expand?.user?.username}
+        <time class="text-xs opacity-40 font-normal"> - {message.created}</time>
+      </div>
+      <div
+        class="chat-bubble {message.expand.user.id === $currentUser?.id
+          ? 'chat-bubble-secondary'
+          : ''}"
+      >
+        {message.text}
       </div>
     </div>
   {/each}
@@ -60,5 +78,5 @@
 
 <form on:submit|preventDefault={sendMessage}>
   <input placeholder="Message" type="text" bind:value={newMessage} />
-  <button type="submit">Send</button>
+  <button type="submit" class="btn btn-neutral">Send</button>
 </form>
