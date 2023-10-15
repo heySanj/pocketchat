@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { currentUser, pb } from "./pocketbase";
+  import Message from "./Message.svelte";
 
   let newMessage: string;
   let messages: any[] = [];
@@ -45,38 +46,18 @@
   };
 </script>
 
-<div class="messages">
+<div class="messages px-4 rounded-xl border">
   {#each messages as message (message.id)}
-    <div
-      class="chat py-4 {message.expand.user.id === $currentUser?.id
-        ? 'chat-end'
-        : 'chat-start'}"
-    >
-      <div class="chat-image avatar">
-        <div class="w-24 rounded-full border-2 border-neutral">
-          <img
-            src="https://api.dicebear.com/7.x/notionists/svg?seed={message
-              .expand.user.username}"
-            alt="avatar"
-          />
-        </div>
-      </div>
-      <div class="chat-header self-end pb-2 font-black">
-        @{message.expand?.user?.username}
-        <time class="text-xs opacity-40 font-normal"> - {message.created}</time>
-      </div>
-      <div
-        class="chat-bubble {message.expand.user.id === $currentUser?.id
-          ? 'chat-bubble-secondary'
-          : ''}"
-      >
-        {message.text}
-      </div>
-    </div>
+    <Message {message} />
   {/each}
 </div>
 
-<form on:submit|preventDefault={sendMessage}>
-  <input placeholder="Message" type="text" bind:value={newMessage} />
-  <button type="submit" class="btn btn-neutral">Send</button>
+<form on:submit|preventDefault={sendMessage} class="mt-4 flex">
+  <input
+    class="textarea textarea-bordered flex-grow mr-2"
+    placeholder="Message"
+    type="text"
+    bind:value={newMessage}
+  />
+  <button type="submit" class="btn btn-secondary text-2xl">💬</button>
 </form>

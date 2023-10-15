@@ -3,14 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
-  font-family: Exo 2;
-  line-height: 1.5;
-  font-weight: 400;
-} */
+:root {
+}
 
 #app {
-  max-width: 900px;
+  max-width: 720px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;

@@ -30,8 +30,8 @@
 </script>
 
 {#if $currentUser}
-  <p>
-    Signed in as {$currentUser.username}
+  <p class="mb-4">
+    Signed in as <b>{$currentUser.username}</b>
   </p>
 {:else}
   <form on:submit|preventDefault>
