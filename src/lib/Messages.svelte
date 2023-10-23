@@ -55,9 +55,16 @@
 <form on:submit|preventDefault={sendMessage} class="mt-4 flex">
   <input
     class="textarea textarea-bordered flex-grow mr-2"
-    placeholder="Message"
+    placeholder={$currentUser
+      ? `Message as ${$currentUser?.name}`
+      : "Login to send messages"}
     type="text"
     bind:value={newMessage}
+    disabled={!$currentUser}
   />
-  <button type="submit" class="btn btn-secondary text-2xl">💬</button>
+  <button
+    type="submit"
+    class="btn btn-secondary text-2xl"
+    disabled={!$currentUser}>💬</button
+  >
 </form>

@@ -30,14 +30,27 @@
 </script>
 
 {#if $currentUser}
-  <p class="mb-4">
+  <p class="my-4">
     Signed in as <b>{$currentUser.username}</b>
+    <button on:click={signOut} class="italic opacity-40">(Log Out?)</button>
   </p>
 {:else}
-  <form on:submit|preventDefault>
-    <input placeholder="Username" type="text" bind:value={username} />
-    <input placeholder="Password" type="password" bind:value={password} />
-    <button on:click={signUp}>Sign Up</button>
-    <button on:click={login}>Login</button>
+  <form on:submit|preventDefault class="mt-4 flex">
+    <input
+      placeholder="Username"
+      type="text"
+      bind:value={username}
+      class="textarea textarea-bordered flex-grow mr-2"
+    />
+    <input
+      placeholder="Password"
+      type="password"
+      bind:value={password}
+      class="textarea textarea-bordered flex-grow mr-2"
+    />
+    <button on:click={signUp} class="btn btn-secondary text-md mr-2"
+      >Sign Up</button
+    >
+    <button on:click={login} class="btn btn-neutral text-md">Login</button>
   </form>
 {/if}
