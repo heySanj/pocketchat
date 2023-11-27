@@ -4,10 +4,20 @@
   import toast, { Toaster, type ToastOptions } from "svelte-french-toast";
   import { capitalCase } from "change-case";
 
+  interface ValidationErrors {
+    username: string;
+    password: string;
+  }
+
   let username: string;
   let password: string;
+  let errors: ValidationErrors = {
+    username: "",
+    password: "",
+  };
 
   const login = async () => {
+    clearErrors();
     await pb
       .collection("users")
       .authWithPassword(username, password)
@@ -17,6 +27,7 @@
   };
 
   const signUp = async () => {
+    clearErrors();
     try {
       const data = {
         username,
@@ -27,10 +38,12 @@
       await pb
         .collection("users")
         .create(data)
+        .then(async () => {
+          await login();
+        })
         .catch((error: ClientResponseError) => {
           generateLoginToasts(error);
         });
-      await login();
     } catch (error) {
       console.error(error);
     }
@@ -38,6 +51,12 @@
 
   const signOut = () => {
     pb.authStore.clear();
+  };
+
+  const clearErrors = () => {
+    Object.keys(errors).forEach(
+      (k) => (errors[k as keyof ValidationErrors] = "")
+    );
   };
 
   const generateLoginToasts = (error: ClientResponseError) => {
@@ -50,6 +69,9 @@
     };
     Object.keys(errorFields).length > 0
       ? Object.keys(errorFields).map((k) => {
+          if (k in errors) {
+            errors[k as keyof ValidationErrors] = errorFields[k].message;
+          }
           const errorKey = k !== "passwordConfirm" ? capitalCase(k) : "";
           errorKey &&
             toast.error(`${errorKey}: ${errorFields[k].message}`, toastOptions);
@@ -67,19 +89,33 @@
 {:else}
   <form on:submit|preventDefault class="mt-4 flex flex-col gap-y-2">
     <input
+      id="username"
       placeholder="Username"
-      required
       type="text"
       bind:value={username}
-      class="textarea textarea-bordered flex-grow"
+      class={`textarea textarea-bordered flex-grow ${
+        errors.username && "textarea-error"
+      }`}
     />
+    {#if errors.username}
+      <label class="label pt-0" for="username">
+        <span class="label-text-alt text-xs text-error">{errors.username}</span>
+      </label>
+    {/if}
+
     <input
       placeholder="Password"
-      required
       type="password"
       bind:value={password}
-      class="textarea textarea-bordered flex-grow"
+      class={`textarea textarea-bordered flex-grow ${
+        errors.password && "textarea-error"
+      }`}
     />
+    {#if errors.password}
+      <label class="label pt-0" for="username">
+        <span class="label-text-alt text-xs text-error">{errors.password}</span>
+      </label>
+    {/if}
     <button on:click={signUp} class="btn btn-secondary text-md">Sign Up</button>
     <button on:click={login} class="btn btn-neutral text-md">Login</button>
   </form>
